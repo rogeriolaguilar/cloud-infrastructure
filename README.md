@@ -1,44 +1,15 @@
-# Consul Auto-Join Example
-This repository demonstrates using Consul auto-join to create and update a Consul cluster on AWS.
+# Consul Auto-Join and Nomad Example
 
-Consul 0.7.5 introduced new functionality which allows it to discover other agents using cloud metadata. This blog post explores leveraging AWS metadata to auto-join and auto scale a Consul cluster.
+Adding Nomad and updating consul version to the sample from project: https://github.com/hashicorp/consul-ec2-auto-join-example
 
-The [latest documentation for Consul](https://www.consul.io/docs/agent/options.html) shows new options we can specify in the Consul configuration file or startup parameters.
-
-- `-retry-join-ec2-tag-key` - The Amazon EC2 instance tag key to filter on. When used with `-retry-join-ec2-tag-value`, Consul will attempt to join EC2 instances with the given tag key and value on startup. 
-- `-retry-join-ec2-tag-value` - The Amazon EC2 instance tag value to filter on.
-- `-retry-join-ec2-region` - (Optional) The Amazon EC2 region to use. If not specified, Consul will use the local instance's EC2 metadata endpoint to discover the region.
-
-The new feature requires permission to read the AWS instance state, and there are a variety of options available to grant these permissions.
-
-- Static credentials (from the config file)
-- Environment variables (`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`)
-- Shared credentials file (`~/.aws/credentials` or the path specified by `AWS_SHARED_CREDENTIALS_FILE`)
-- ECS task role metadata (container-specific)
-- EC2 instance role metadata
-
-![Flow](images/flow.jpg)
-
-The method we are using in this example is the EC2 role metadata.  By assigning the `ec2:DescribeInstances` permission to the instances IAM role, we can give Consul this permission without leaking any other control over your AWS account.
-
-```
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": "ec2:DescribeInstances",
-      "Resource": "*"
-    }
-  ]
-}
-```
-
+The versions was updated to:
+- Terraform v0.11.7
+- Consul v1.2.1 
 
 To start and bootstrap the cluster modify the file terraform.tfvars to add your AWS credentials and default region and then run `terraform plan`, `terraform apply` to create the cluster.
 
 ```
-aws_region = "eu-west-1"
+aws_region = "us-east-1"
 
 aws_access_key = "AWS_ACCESS_KEY"
 
@@ -73,11 +44,11 @@ Running the `consul members` command will show all members of the cluster and th
 ```bash
 $ consul members
 Node                  Address          Status  Type    Build  Protocol  DC
-consul-blog-client-0  10.1.1.189:8301  alive   client  0.7.5  2         dc1
-consul-blog-client-1  10.1.2.187:8301  alive   client  0.7.5  2         dc1
-consul-blog-server-0  10.1.1.241:8301  alive   server  0.7.5  2         dc1
-consul-blog-server-1  10.1.2.24:8301   alive   server  0.7.5  2         dc1
-consul-blog-server-2  10.1.1.26:8301   alive   server  0.7.5  2         dc1
+consul-client-0  10.1.1.189:8301  alive   client  1.2.1  2         dc1
+consul-client-1  10.1.2.187:8301  alive   client  1.2.1  2         dc1
+consul-server-0  10.1.1.241:8301  alive   server  1.2.1  2         dc1
+consul-server-1  10.1.2.24:8301   alive   server  1.2.1  2         dc1
+consul-server-2  10.1.1.26:8301   alive   server  1.2.1  2         dc1
 ```
 
 ## Scale up
@@ -119,13 +90,13 @@ Run `consul members` again after the new servers have finished provisioning. It 
 
 ```bash
 Node                  Address          Status  Type    Build  Protocol  DC
-consul-blog-client-0  10.1.1.189:8301  alive   client  0.7.5  2         dc1
-consul-blog-client-1  10.1.2.187:8301  alive   client  0.7.5  2         dc1
-consul-blog-server-0  10.1.1.241:8301  alive   server  0.7.5  2         dc1
-consul-blog-server-1  10.1.2.24:8301   alive   server  0.7.5  2         dc1
-consul-blog-server-2  10.1.1.26:8301   alive   server  0.7.5  2         dc1
-consul-blog-server-3  10.1.2.44:8301   alive   server  0.7.5  2         dc1
-consul-blog-server-4  10.1.1.75:8301   alive   server  0.7.5  2         dc1
+consul-client-0  10.1.1.189:8301  alive   client  1.2.1  2         dc1
+consul-client-1  10.1.2.187:8301  alive   client  1.2.1  2         dc1
+consul-server-0  10.1.1.241:8301  alive   server  1.2.1  2         dc1
+consul-server-1  10.1.2.24:8301   alive   server  1.2.1  2         dc1
+consul-server-2  10.1.1.26:8301   alive   server  1.2.1  2         dc1
+consul-server-3  10.1.2.44:8301   alive   server  1.2.1  2         dc1
+consul-server-4  10.1.1.75:8301   alive   server  1.2.1  2         dc1
 ```
 
 ## Scale down
@@ -133,20 +104,16 @@ The same applies when scaling down - there is no need to manually remove nodes, 
 
 ```text
 Node                  Address          Status  Type    Build  Protocol  DC
-consul-blog-client-0  10.1.1.189:8301  alive   client  0.7.5  2         dc1
-consul-blog-client-1  10.1.2.187:8301  alive   client  0.7.5  2         dc1
-consul-blog-server-0  10.1.1.241:8301  alive   server  0.7.5  2         dc1
-consul-blog-server-1  10.1.2.24:8301   alive   server  0.7.5  2         dc1
-consul-blog-server-2  10.1.1.26:8301   alive   server  0.7.5  2         dc1
-consul-blog-server-3  10.1.2.44:8301   failed  server  0.7.5  2         dc1
-consul-blog-server-4  10.1.1.75:8301   failed  server  0.7.5  2         dc1
+consul-client-0  10.1.1.189:8301  alive   client  1.2.1  2         dc1
+consul-client-1  10.1.2.187:8301  alive   client  1.2.1  2         dc1
+consul-server-0  10.1.1.241:8301  alive   server  1.2.1  2         dc1
+consul-server-1  10.1.2.24:8301   alive   server  1.2.1  2         dc1
+consul-server-2  10.1.1.26:8301   alive   server  1.2.1  2         dc1
+consul-server-3  10.1.2.44:8301   failed  server  1.2.1  2         dc1
+consul-server-4  10.1.1.75:8301   failed  server  1.2.1  2         dc1
 ```
 
 ## Cleanup
 Do not forget to clean up after the example.  Running `terraform destroy` will remove all resources created by this example.
 
-## Troubleshooting
-These examples use new features of many of the tools. At the time of writing, the following versions were used:
 
-- Terraform v0.9.0
-- Consul v0.7.5 

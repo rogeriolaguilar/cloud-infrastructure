@@ -1,37 +1,29 @@
-# Create the user-data for the Consul server
 data "template_file" "server" {
   count    = "${var.servers}"
-  template = "${file("${path.module}/templates/consul.sh.tpl")}"
-
+  template = "${file("${path.module}/templates/user_data.sh.tpl")}"
+  
   vars {
-    consul_version = "0.7.5"
-
+    consul_version = "${var.consul_version}"
+    consul_home = "${var.consul_home}"
     config = <<EOF
      "bootstrap_expect": 3,
      "node_name": "${var.namespace}-server-${count.index}",
-     "retry_join_ec2": {
-       "tag_key": "${var.consul_join_tag_key}",
-       "tag_value": "${var.consul_join_tag_value}"
-     },
+     "retry_join": ["provider=aws tag_key=consul_join tag_value=training"],
      "server": true
     EOF
   }
 }
 
-# Create the user-data for the Consul server
 data "template_file" "client" {
   count    = "${var.clients}"
-  template = "${file("${path.module}/templates/consul.sh.tpl")}"
-
+  template = "${file("${path.module}/templates/user_data.sh.tpl")}"
+  
   vars {
-    consul_version = "0.7.5"
-
+    consul_version = "${var.consul_version}"
+    consul_home = "${var.consul_home}"
     config = <<EOF
      "node_name": "${var.namespace}-client-${count.index}",
-     "retry_join_ec2": {
-       "tag_key": "${var.consul_join_tag_key}",
-       "tag_value": "${var.consul_join_tag_value}"
-     },
+     "retry_join": ["provider=aws tag_key=consul_join tag_value=training"],
      "server": false
     EOF
   }
@@ -41,7 +33,7 @@ data "template_file" "client" {
 resource "aws_instance" "server" {
   count = "${var.servers}"
 
-  ami           = "${data.aws_ami.ubuntu-1404.id}"
+  ami           = "${data.aws_ami.ubuntu-1604.id}"
   instance_type = "${var.instance_type}"
   key_name      = "${aws_key_pair.consul.id}"
 
@@ -60,7 +52,7 @@ resource "aws_instance" "server" {
 resource "aws_instance" "client" {
   count = "${var.clients}"
 
-  ami           = "${data.aws_ami.ubuntu-1404.id}"
+  ami           = "${data.aws_ami.ubuntu-1604.id}"
   instance_type = "${var.instance_type}"
   key_name      = "${aws_key_pair.consul.id}"
 
