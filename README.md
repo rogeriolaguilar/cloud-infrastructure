@@ -1,4 +1,4 @@
-# Consul Auto-Join and Nomad Example
+# Nomad and Consul Auto-Join Example
 
 Adding Nomad and updating consul version to the sample from project: https://github.com/hashicorp/consul-ec2-auto-join-example
 
@@ -50,6 +50,9 @@ consul-server-0  10.1.1.241:8301  alive   server  1.2.1  2         dc1
 consul-server-1  10.1.2.24:8301   alive   server  1.2.1  2         dc1
 consul-server-2  10.1.1.26:8301   alive   server  1.2.1  2         dc1
 ```
+
+## Nomad UI
+To see Nomad UI: http://<nomad-server-ip>:4646
 
 ## Scale up
 The cluster automatically bootstrapped with no human intervention, to simulate a failure scenario or scaling of the cluster again modify the `terraform.tfvars` file, increase the number of instances to 5 and then re-run `terraform plan` and terraform apply`.
