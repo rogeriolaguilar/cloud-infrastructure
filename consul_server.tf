@@ -1,12 +1,12 @@
 data "template_file" "consul_server" {
-  count    = "${var.servers}"
+  count    = "${var.consul_bootstrap_expect}"
   template = "${file("${path.module}/templates/consul_server.sh.tpl")}"
   
   vars {
     consul_version = "${var.consul_version}"
     consul_home = "${var.consul_home}"
     namespace = "${var.namespace}"
-    bootstrap_expect = 3
+    bootstrap_expect = "${var.consul_bootstrap_expect}"
     index = "${count.index}"
     consul_join_tag_value = "${var.consul_join_tag_value}"
   }
@@ -14,10 +14,10 @@ data "template_file" "consul_server" {
 
 # Create the Consul cluster
 resource "aws_instance" "consul_server" {
-  count = "${var.servers}"
+  count = "${var.consul_bootstrap_expect}"
 
   ami           = "${data.aws_ami.ubuntu-1604.id}"
-  instance_type = "${var.instance_type}"
+  instance_type = "${var.consul_server_instance_type}"
   key_name      = "${aws_key_pair.consul.id}"
 
   subnet_id              = "${element(aws_subnet.consul.*.id, count.index)}"

@@ -1,5 +1,5 @@
 data "template_file" "nomad_server" {
-  count    = "${var.servers}"
+  count    = "${var.nomad_bootstrap_expect}"
   template = "${file("${path.module}/templates/nomad_server.sh.tpl")}"
   
   vars {
@@ -15,10 +15,10 @@ data "template_file" "nomad_server" {
 
 # Create the Nomad server (it includes nomad server and consul client)
 resource "aws_instance" "nomad_server" {
-  count = "${var.servers}"
+  count = "${var.nomad_bootstrap_expect}"
 
   ami           = "${data.aws_ami.ubuntu-1604.id}"
-  instance_type = "${var.application_instance_type}"
+  instance_type = "${var.nomad_server_instance_type}"
   key_name      = "${aws_key_pair.consul.id}"
 
   subnet_id              = "${element(aws_subnet.consul.*.id, count.index)}"

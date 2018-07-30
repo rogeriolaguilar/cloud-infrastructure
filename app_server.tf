@@ -1,5 +1,5 @@
 data "template_file" "app_server" {
-  count    = "${var.clients}"
+  count    = "${var.app_server_count}"
   template = "${file("${path.module}/templates/app_server.sh.tpl")}"
   
   vars {
@@ -14,10 +14,10 @@ data "template_file" "app_server" {
 
 # Create application server (it includes nomad client and consul client)
 resource "aws_instance" "app_server" {
-  count = "${var.clients}"
+  count = "${var.app_server_count}"
 
   ami           = "${data.aws_ami.ubuntu-1604.id}"
-  instance_type = "${var.instance_type}"
+  instance_type = "${var.application_instance_type}"
   key_name      = "${aws_key_pair.consul.id}"
 
   subnet_id              = "${element(aws_subnet.consul.*.id, count.index)}"

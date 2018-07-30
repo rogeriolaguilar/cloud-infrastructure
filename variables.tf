@@ -10,13 +10,10 @@ variable "aws_secret_key" {
   description = "AWS secret for account"
 }
 
-variable "instance_type" {
-  default = "t2.nano"
-}
+variable "consul_server_instance_type" { default = "t2.nano" }
+variable "nomad_server_instance_type" { default = "t2.nano" }
+variable "application_instance_type" { default = "t2.nano" }
 
-variable "application_instance_type" {
-  default = "t2.micro"
-}
 
 variable "namespace" {
   description = <<EOH
@@ -28,13 +25,8 @@ It is best if you add this to your .tfvars file so you do not need to type
 it manually with each run
 EOH
 }
-
-variable "servers" {
-  description = "The number of consul servers."
-}
-
-variable "clients" {
-  description = "The number of consul client instances"
+variable "app_server_count" {
+  description = "The number of application instances (that contains Nomad client and Consul client)"
 }
 
 variable "consul_version" {
@@ -42,9 +34,15 @@ variable "consul_version" {
   default     = "1.2.1"
 }
 
-variable "consul_home" { default = "/consul"}
-variable "nomad_home" { default = "/nomad"}
-variable "nomad_bootstrap_expect" { default = 3 }
+variable "consul_home" { 
+  default = "/consul"
+}
+variable "nomad_home" { 
+  default = "/nomad"
+}
+
+variable "nomad_bootstrap_expect" { }
+variable "consul_bootstrap_expect" { }
 
 variable "vpc_cidr_block" {
   description = "The top-level CIDR block for the VPC."
