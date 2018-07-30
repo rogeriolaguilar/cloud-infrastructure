@@ -26,7 +26,7 @@ cat > ${consul_home}/config.json << EOF
   "disable_update_check": true,
   "leave_on_terminate": true,
   "bootstrap_expect": 3,
-  "node_name": "${namespace}-server-${index}",
+  "node_name": "consul-server-${index}",
   "retry_join": ["provider=aws tag_key=consul_join tag_value=${consul_join_tag_value}"],
   "server": true
 }

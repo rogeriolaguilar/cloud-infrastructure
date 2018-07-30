@@ -7,16 +7,16 @@ apt -yqq update
 apt -yqq install unzip # apt-transport-https ca-certificates software-properties-common
 
 
-# echo "########################### Installing DOCKER  ###########################"
-# apt -y remove docker docker-engine docker.io
-# curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-# add-apt-repository \
-#    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-#    $(lsb_release -cs) \
-#    stable"
-# apt -y update
-# apt -y install docker-ce
-# usermod -aG docker ubuntu
+echo "########################### Installing DOCKER  ###########################"
+apt -y remove docker docker-engine docker.io
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+apt -y update
+apt -y install docker-ce
+usermod -aG docker ubuntu
 
 PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
 PUBLIC_IP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
@@ -39,7 +39,7 @@ cat > ${consul_home}/config.json << EOF
   "disable_update_check": true,
   "leave_on_terminate": true,
   "retry_join": ["provider=aws tag_key=consul_join tag_value=${consul_join_tag_value}"],
-  "node_name": "application-consul-client-${index}"
+  "node_name": "app-server-${index}"
 }
 EOF
 
@@ -92,40 +92,28 @@ client {
 EOF
 
 
-cat > /usr/local/bin/nomad_client_service.sh << 'EOF' 
-#!/bin/bash
-
-start_service() {
-  /usr/local/bin/nomad agent -config=${nomad_home}/config.hcl >> ${nomad_home}/nomad.log 2>&1
-}
-
-stop_service() {
-  PID=$(ps ax | grep "nomad agent" | grep -v grep | cut -d " " -f 2)
-  kill $PID
-}
-
-main() {
-  case $1 in
-    "start" )
-      start_service ;;
-    "stop" )
-      stop_service ;;
-    "restart" )
-      stop_service && start_service ;;
-  esac
-}
-main $1;
+cat > /usr/local/bin/nomad_start.sh << 'EOF' 
+#!/bin/bash -x
+/usr/local/bin/nomad agent -config=${nomad_home}/config.hcl >> ${nomad_home}/nomad.log 2>&1
 EOF
-chmod +x /usr/local/bin/nomad_client_service.sh
+chmod +x /usr/local/bin/nomad_start.sh
+
+cat > /usr/local/bin/nomad_stop.sh << 'EOF' 
+#!/bin/bash -x
+PID=$(ps ax | grep "nomad agent" | grep -v grep | cut -d " " -f 2)
+kill $PID
+EOF
+chmod +x /usr/local/bin/nomad_stop.sh
 
 mkdir -p  /usr/lib/systemd/system/
-cat <<EOF > /usr/lib/systemd/system/nomad-client.service
+cat <<'EOF' > /usr/lib/systemd/system/nomad-client.service
 [Unit]
 Description=nomad-client
-After=consul-client.service
+After=network.service
+
 [Service]
-ExecStart=/usr/local/bin/nomad_client_service.sh start
-ExecStop=/usr/local/bin/nomad_client_service.sh stop
+ExecStart=/usr/local/bin/nomad_start.sh
+ExecStop=/usr/local/bin/nomad_stop.sh
 
 # Give a reasonable amount of time for the server to start up/shut down
 TimeoutSec=300
@@ -134,11 +122,10 @@ TimeoutSec=300
 WantedBy=multi-user.target
 EOF
 
+systemctl daemon-reload
+systemctl start consul-client
+systemctl enable consul-client
+systemctl start nomad-client
+systemctl enable nomad-client
 
-systemctl daemon-reload \
-  && systemctl start consul-client \
-  && systemctl enable consul-client
-  && systemctl start nomad-client \
-  && systemctl enable nomad-client
-
-#reboot
+reboot
