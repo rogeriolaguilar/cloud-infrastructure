@@ -11,6 +11,10 @@ variable "aws_secret_key" {
 }
 
 variable "instance_type" {
+  default = "t2.nano"
+}
+
+variable "application_instance_type" {
   default = "t2.micro"
 }
 
@@ -38,7 +42,9 @@ variable "consul_version" {
   default     = "1.2.1"
 }
 
-variable "consul_home" { default = "/home/ubuntu/consul"}
+variable "consul_home" { default = "/consul"}
+variable "nomad_home" { default = "/nomad"}
+variable "nomad_bootstrap_expect" { default = 3 }
 
 variable "vpc_cidr_block" {
   description = "The top-level CIDR block for the VPC."

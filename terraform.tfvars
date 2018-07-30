@@ -1,6 +1,7 @@
 namespace = "nomad-consul"
 
-instance_type = "t2.micro"
+instance_type = "t2.nano"
+application_instance_type = "t2.nano"
 
 servers = 3
 
