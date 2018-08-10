@@ -63,10 +63,10 @@ EOF
 
 
 echo "########################### Installing NOMAD... ###########################"
-curl https://releases.hashicorp.com/nomad/0.8.1/nomad_0.8.1_linux_amd64.zip \
-  -o /tmp/nomad_0.8.1_linux_amd64.zip \
-  && unzip /tmp/nomad_0.8.1_linux_amd64.zip -d /usr/local/bin/ \
-  && rm -rf /tmp/nomad_0.8.1_linux_amd64.zip
+curl https://releases.hashicorp.com/nomad/${nomad_version}/nomad_${nomad_version}_linux_amd64.zip \
+  -o /tmp/nomad.zip \
+  && unzip /tmp/nomad.zip -d /usr/local/bin/ \
+  && rm -rf /tmp/nomad.zip
 
 mkdir -p ${nomad_home}/data
 cat > ${nomad_home}/config.hcl << 'EOF'

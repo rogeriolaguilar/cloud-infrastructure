@@ -4,6 +4,7 @@ data "template_file" "nomad_server" {
   
   vars {
     consul_version = "${var.consul_version}"
+    nomad_version = "${var.nomad_version}"
     consul_home = "${var.consul_home}"
     namespace = "${var.namespace}"
     index = "${count.index}"

@@ -3,6 +3,7 @@ data "template_file" "app" {
   
   vars {
     consul_version = "${var.consul_version}"
+    nomad_version = "${var.nomad_version}"
     consul_home = "${var.consul_home}"
     namespace = "${var.namespace}"
     consul_join_tag_value = "${var.consul_join_tag_value}"

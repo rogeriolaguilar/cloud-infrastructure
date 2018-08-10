@@ -1,14 +1,6 @@
-variable "aws_region" {
-  description = "AWS region to create the environment"
-}
-
-variable "aws_access_key" {
-  description = "AWS access key for account"
-}
-
-variable "aws_secret_key" {
-  description = "AWS secret for account"
-}
+variable "aws_region" { }
+variable "aws_access_key" { }
+variable "aws_secret_key" { }
 
 variable "consul_server_instance_type" { default = "t2.nano" }
 variable "nomad_server_instance_type" { default = "t2.nano" }
@@ -30,8 +22,11 @@ variable "app_count" {
 }
 
 variable "consul_version" {
-  description = "The version of Consul to install (server and client)."
   default     = "1.2.1"
+}
+
+variable "nomad_version" {
+  default     = "0.8.4"
 }
 
 variable "consul_home" { 
