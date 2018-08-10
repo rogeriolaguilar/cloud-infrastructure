@@ -4,7 +4,7 @@ timedatectl set-timezone America/Sao_Paulo
 
 echo "########################### Installing dependencies ###########################"
 apt -yqq update
-apt -yqq install unzip # apt-transport-https ca-certificates software-properties-common
+apt -yqq install unzip apt-transport-https ca-certificates software-properties-common
 
 
 echo "########################### Installing DOCKER  ###########################"
@@ -39,7 +39,7 @@ cat > ${consul_home}/config.json << EOF
   "disable_update_check": true,
   "leave_on_terminate": true,
   "retry_join": ["provider=aws tag_key=consul_join tag_value=${consul_join_tag_value}"],
-  "node_name": "app-server-${index}"
+  "node_name": "app-$PRIVATE_IP"
 }
 EOF
 

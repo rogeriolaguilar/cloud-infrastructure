@@ -25,7 +25,7 @@ It is best if you add this to your .tfvars file so you do not need to type
 it manually with each run
 EOH
 }
-variable "app_server_count" {
+variable "app_count" {
   description = "The number of application instances (that contains Nomad client and Consul client)"
 }
 

@@ -80,7 +80,7 @@ resource "aws_security_group" "consul" {
 
 resource "aws_key_pair" "consul" {
   key_name   = "${var.namespace}"
-  public_key = "${file("${var.public_key_path}")}"
+  public_key = "${file("./${var.public_key_path}")}"
 }
 
 # Create an IAM role for the auto-join
