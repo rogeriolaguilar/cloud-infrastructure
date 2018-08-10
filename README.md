@@ -15,6 +15,14 @@ aws_access_key = "AWS_ACCESS_KEY"
 
 aws_secret_key = "AWS_SECRET"
 ```
+or 
+
+```
+export AWS_SECRET_ACCESS_KEY=???
+export AWS_DEFAULT_REGION=???
+export AWS_ACCESS_KEY_ID=???
+
+```
 
 Once this is all up and running, you will see some output from Terraform showing the IP addresses of the created agents and servers.
 
@@ -52,13 +60,13 @@ consul-server-2  10.1.1.26:8301   alive   server  1.2.1  2         dc1
 ```
 
 ## Nomad UI
-To see Nomad UI: http://<nomad-server-ip>:4646
+To see Nomad UI: http://nomad-server-ip:4646
 
 ## Scale up
 The cluster automatically bootstrapped with no human intervention, to simulate a failure scenario or scaling of the cluster again modify the `terraform.tfvars` file, increase the number of instances to 5 and then re-run `terraform plan` and terraform apply`.
 
 ```bash
-$ terraform plan 
+$ terraform plan -var-file=terraform.tfvars
 Plan: 2 to add, 0 to change, 0 to destroy.
 ...
 ```
@@ -115,6 +123,16 @@ consul-server-2  10.1.1.26:8301   alive   server  1.2.1  2         dc1
 consul-server-3  10.1.2.44:8301   failed  server  1.2.1  2         dc1
 consul-server-4  10.1.1.75:8301   failed  server  1.2.1  2         dc1
 ```
+
+## Deploy
+To deploy a sample application run de `deploy.sh` script using as argument the public IP of the nomad server
+
+```
+./deploy.sh nomad-server-public-ip
+```
+
+In Nomad UI you can see that the job was deployed.
+
 
 ## Cleanup
 Do not forget to clean up after the example.  Running `terraform destroy` will remove all resources created by this example.
