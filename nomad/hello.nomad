@@ -7,6 +7,7 @@ job "helloworld" {
   }
 
   group "hello-group" {
+    count = 2
     task "hello-task" {
       driver = "docker"
       config {
