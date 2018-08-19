@@ -6,7 +6,9 @@ The versions was updated to:
 - Terraform v0.11.7
 - Consul v1.2.1 
 
-To start and bootstrap the cluster modify the file terraform.tfvars to add your AWS credentials and default region and then run `terraform plan`, `terraform apply` to create the cluster.
+Before all run `./terraform init`
+
+To start and bootstrap the cluster modify the file terraform.tfvars to add your AWS credentials and default region and then run `./terraform plan`, `./terraform apply` to create the cluster.
 
 ```
 aws_region = "us-east-1"

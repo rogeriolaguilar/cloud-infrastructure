@@ -9,6 +9,7 @@ data "template_file" "consul_server" {
     bootstrap_expect = "${var.consul_bootstrap_expect}"
     index = "${count.index}"
     consul_join_tag_value = "${var.consul_join_tag_value}"
+    consul_join_tag_key = "${var.consul_join_tag_key}"
   }
 }
 
@@ -25,7 +26,7 @@ resource "aws_instance" "consul_server" {
   vpc_security_group_ids = ["${aws_security_group.consul.id}"]
 
   tags = "${map(
-    "Name", "${var.namespace}-consul-server-${count.index}",
+    "Name", "${var.namespace}/ConsulServer-${count.index}",
     var.consul_join_tag_key, var.consul_join_tag_value
   )}"
 

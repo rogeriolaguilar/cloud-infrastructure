@@ -1,21 +1,3 @@
-# Get the list of official Canonical Ubunt 16.04 AMIs
-data "aws_ami" "ubuntu-1604" {
-    most_recent = true
-
-    filter {
-        name   = "name"
-        values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
-    }
-
-    filter {
-        name   = "virtualization-type"
-        values = ["hvm"]
-    }
-
-    owners = ["099720109477"] # Canonical
-}
-
-
 # Create a VPC to launch our instances into
 resource "aws_vpc" "consul" {
   cidr_block           = "${var.vpc_cidr_block}"
@@ -76,35 +58,4 @@ resource "aws_security_group" "consul" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-}
-
-resource "aws_key_pair" "consul" {
-  key_name   = "${var.namespace}"
-  public_key = "${file("./${var.public_key_path}")}"
-}
-
-# Create an IAM role for the auto-join
-resource "aws_iam_role" "consul-join" {
-  name               = "${var.namespace}-consul-join"
-  assume_role_policy = "${file("${path.module}/templates/policies/assume-role.json")}"
-}
-
-# Create the policy
-resource "aws_iam_policy" "consul-join" {
-  name        = "${var.namespace}-consul-join"
-  description = "Allows Consul nodes to describe instances for joining."
-  policy      = "${file("${path.module}/templates/policies/describe-instances.json")}"
-}
-
-# Attach the policy
-resource "aws_iam_policy_attachment" "consul-join" {
-  name       = "${var.namespace}-consul-join"
-  roles      = ["${aws_iam_role.consul-join.name}"]
-  policy_arn = "${aws_iam_policy.consul-join.arn}"
-}
-
-# Create the instance profile
-resource "aws_iam_instance_profile" "consul-join" {
-  name  = "${var.namespace}-consul-join"
-  roles = ["${aws_iam_role.consul-join.name}"]
 }

@@ -21,8 +21,11 @@ variable "app_count" {
   description = "The number of application instances (that contains Nomad client and Consul client)"
 }
 
+variable "datacenter" {
+  description = "Name of datacenter, used by Nomad"
+}
 variable "consul_version" {
-  default     = "1.2.1"
+  default     = "1.2.2"
 }
 
 variable "nomad_version" {
@@ -56,10 +59,8 @@ variable "consul_join_tag_key" {
 
 variable "consul_join_tag_value" {
   description = "The value of the tag to auto-join on EC2."
-  default     = "training"
 }
 
 variable "public_key_path" {
   description = "The absolute path on disk to the SSH public key."
-  default     = "us-east-1.pub"
 }

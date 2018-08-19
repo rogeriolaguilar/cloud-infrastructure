@@ -2,11 +2,13 @@ data "template_file" "app" {
   template = "${file("${path.module}/templates/app.sh.tpl")}"
   
   vars {
+    datacenter = "${var.datacenter}"
     consul_version = "${var.consul_version}"
     nomad_version = "${var.nomad_version}"
     consul_home = "${var.consul_home}"
     namespace = "${var.namespace}"
     consul_join_tag_value = "${var.consul_join_tag_value}"
+    consul_join_tag_key = "${var.consul_join_tag_key}"
     nomad_home = "${var.nomad_home}"
   }
 }

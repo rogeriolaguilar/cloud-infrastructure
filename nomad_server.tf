@@ -9,6 +9,7 @@ data "template_file" "nomad_server" {
     namespace = "${var.namespace}"
     index = "${count.index}"
     consul_join_tag_value = "${var.consul_join_tag_value}"
+    consul_join_tag_key = "${var.consul_join_tag_key}"
     nomad_home = "${var.nomad_home}"
     bootstrap_expect = "${var.nomad_bootstrap_expect}"
   }
@@ -27,7 +28,7 @@ resource "aws_instance" "nomad_server" {
   vpc_security_group_ids = ["${aws_security_group.consul.id}"]
 
   tags = "${map(
-    "Name", "${var.namespace}-nomad-server-${count.index}",
+    "Name", "${var.namespace}/NomadServer-${count.index}",
     var.consul_join_tag_key, var.consul_join_tag_value
   )}"
 
