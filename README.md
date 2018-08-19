@@ -6,9 +6,9 @@ The versions was updated to:
 - Terraform v0.11.7
 - Consul v1.2.1 
 
-Before all run `./terraform init`
+Before all run `./terraform.sh init`
 
-To start and bootstrap the cluster modify the file terraform.tfvars to add your AWS credentials and default region and then run `./terraform plan`, `./terraform apply` to create the cluster.
+To start and bootstrap the cluster modify the file terraform.tfvars to add your AWS credentials and default region and then run `./terraform.sh plan`, `./terraform.sh apply` to create the cluster.
 
 ```
 aws_region = "us-east-1"
@@ -65,7 +65,7 @@ consul-server-2  10.1.1.26:8301   alive   server  1.2.1  2         dc1
 To see Nomad UI: http://nomad-server-ip:4646
 
 ## Scale up
-The cluster automatically bootstrapped with no human intervention, to simulate a failure scenario or scaling of the cluster again modify the `terraform.tfvars` file, increase the number of instances to 5 and then re-run `terraform plan` and terraform apply`.
+The cluster automatically bootstrapped with no human intervention, to simulate a failure scenario or scaling of the cluster again modify the `terraform.tfvars` file, increase the number of instances to 5 and then re-run `./terraform.sh plan` and terraform apply`.
 
 ```bash
 $ terraform plan -var-file=terraform.tfvars
@@ -137,6 +137,6 @@ In Nomad UI you can see that the job was deployed.
 
 
 ## Cleanup
-Do not forget to clean up after the example.  Running `terraform destroy` will remove all resources created by this example.
+Do not forget to clean up after the example.  Running `./terraform.sh destroy` will remove all resources created by this example.
 
 
