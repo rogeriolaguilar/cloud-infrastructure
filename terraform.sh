@@ -1,4 +1,6 @@
-TERRAFORM_FOLDER=terraform
+#!/bin/bash
+
+TERRAFORM_FOLDER='terraform'
 VAR_FILE=$TERRAFORM_FOLDER/terraform.tfvars
 
 case ${1} in
