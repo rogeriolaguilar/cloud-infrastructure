@@ -1,4 +1,4 @@
-# Cloud Infrastructure using Nomad and Consul
+# AWS Cloud Infrastructure using Nomad and Consul
 
 The versions was updated to:
 
@@ -6,15 +6,20 @@ The versions was updated to:
 - Consul v1.2.2
 - Nomad 0.8.4
 
+This repository has a sample nomad job define in `./nomad/hello.nomad`. When you conclude the creation of the cluster that application can be deploy using the `./deploy.sh` script.
+
 Before all run `./terraform.sh init`
 
 To start and bootstrap the cluster modify the file terraform.tfvars or set the environment variables to add your AWS credentials and default region
 
 ```bash
-export AWS_SECRET_ACCESS_KEY='???'
-export AWS_DEFAULT_REGION='???'
-export AWS_ACCESS_KEY_ID='???'
+$ export AWS_SECRET_ACCESS_KEY='???'
+$ export AWS_DEFAULT_REGION='???'
+$ export AWS_ACCESS_KEY_ID='???'
 ```
+
+Then create a AWS access key ( see https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html )
+
 
 Run `./terraform.sh plan`, `./terraform.sh apply` to create the cluster.
 
@@ -87,7 +92,7 @@ consul-server-4  10.1.1.75:8301   failed  server  1.2.1  2         dc1
 To deploy a sample application run de `deploy.sh` script using as argument the name of the nomad file (without extension)
 
 ```
-./deploy.sh 'hello'
+$ ./deploy.sh 'hello'
 ```
 
 In Nomad UI you can see that the job was deployed.
