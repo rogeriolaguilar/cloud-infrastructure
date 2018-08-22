@@ -11,9 +11,9 @@ public_key_path = "us-east-1.pub"
 
 
 # Instances configurations ($$)
-nomad_bootstrap_expect = 3
+nomad_bootstrap_expect = 1
 nomad_server_instance_type = "t2.nano"
-consul_bootstrap_expect = 3
+consul_bootstrap_expect = 1
 nomad_server_instance_type = "t2.nano"
 app_count = 2
 application_instance_type = "t2.nano"

@@ -10,8 +10,12 @@ case ${1} in
     terraform plan -var-file=$VAR_FILE $TERRAFORM_FOLDER;;
   "apply" )
     terraform apply -var-file=$VAR_FILE $TERRAFORM_FOLDER;;
+  "auto-apply" )
+    terraform apply -auto-approve -var-file=$VAR_FILE $TERRAFORM_FOLDER;;
   "destroy" )
     terraform destroy -var-file=$VAR_FILE $TERRAFORM_FOLDER;;
+  "auto-destroy" )
+    terraform destroy -auto-approve -var-file=$VAR_FILE $TERRAFORM_FOLDER;;
   * )
     echo "Invalid commad \"$1\"... try: init, plan, apply, destroy"
 esac
