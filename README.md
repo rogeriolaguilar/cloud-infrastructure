@@ -13,9 +13,9 @@ Before all run `./terraform.sh init`
 To start and bootstrap the cluster modify the file terraform.tfvars or set the environment variables to add your AWS credentials and default region
 
 ```bash
-$ export AWS_SECRET_ACCESS_KEY='???'
-$ export AWS_DEFAULT_REGION='???'
-$ export AWS_ACCESS_KEY_ID='???'
+export AWS_SECRET_ACCESS_KEY='???'
+export AWS_DEFAULT_REGION='???'
+export AWS_ACCESS_KEY_ID='???'
 ```
 
 Then create a AWS access key ( see https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html )
@@ -38,8 +38,8 @@ $ terraform output nomad_servers
 34.204.79.13
 ```
 
-
 ## Scale up
+
 The cluster automatically bootstrapped with no human intervention, to simulate a failure scenario or scaling of the cluster again modify the `terraform.tfvars` file, change the number of instances and then re-run `./terraform.sh plan` and `terraform apply`.
 
 ```bash
@@ -89,14 +89,19 @@ consul-server-4  10.1.1.75:8301   failed  server  1.2.1  2         dc1
 ```
 
 ## Deploy
+
 To deploy a sample application run de `deploy.sh` script using as argument the name of the nomad file (without extension)
 
-```
-$ ./deploy.sh 'hello'
+```bash
+./deploy.sh 'hello'
 ```
 
 In Nomad UI you can see that the job was deployed.
 
-
 ## Cleanup
-Do not forget to clean up after the example.  Running `./terraform.sh destroy` will remove all resources created by this example.
+
+Do not forget to clean up after the example.
+
+```bash
+./terraform.sh destroy
+```
