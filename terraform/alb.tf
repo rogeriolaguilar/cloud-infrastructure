@@ -21,14 +21,21 @@ resource "aws_alb_listener" "app" {
 }
 
 resource "aws_security_group" "alb_app" {
-    name = "${var.namespace}-alb-app"
-    description = "allow HTTP to ${var.namespace}-alb Load Balancer (ALB)"
-    ingress {
-        from_port = "80"
-        to_port = "80"
-        protocol = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
+  name = "${var.namespace}-alb-app"
+  vpc_id = "${aws_vpc.consul.id}"
+  description = "allow HTTP to ${var.namespace}-alb Load Balancer (ALB)"
+  ingress {
+      from_port = "80"
+      to_port = "80"
+      protocol = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_alb_target_group" "app" {
@@ -38,7 +45,6 @@ resource "aws_alb_target_group" "app" {
 	protocol	= "HTTP"
 	health_check {
                 path = "/"
-                port = "80"
                 protocol = "HTTP"
                 healthy_threshold = 5
                 unhealthy_threshold = 2

@@ -1,19 +1,3 @@
-data "template_file" "consul_server" {
-  count    = "${var.consul_bootstrap_expect}"
-  template = "${file("${path.module}/templates/consul_server.sh.tpl")}"
-  
-  vars {
-    consul_version = "${var.consul_version}"
-    consul_home = "${var.consul_home}"
-    namespace = "${var.namespace}"
-    bootstrap_expect = "${var.consul_bootstrap_expect}"
-    index = "${count.index}"
-    consul_join_tag_value = "${var.consul_join_tag_value}"
-    consul_join_tag_key = "${var.consul_join_tag_key}"
-  }
-}
-
-# Create the Consul cluster
 resource "aws_instance" "consul_server" {
   count = "${var.consul_bootstrap_expect}"
 
@@ -31,6 +15,21 @@ resource "aws_instance" "consul_server" {
   )}"
 
   user_data = "${element(data.template_file.consul_server.*.rendered, count.index)}"
+}
+
+data "template_file" "consul_server" {
+  count    = "${var.consul_bootstrap_expect}"
+  template = "${file("${path.module}/templates/consul_server.sh.tpl")}"
+  
+  vars {
+    consul_version = "${var.consul_version}"
+    consul_home = "${var.consul_home}"
+    namespace = "${var.namespace}"
+    bootstrap_expect = "${var.consul_bootstrap_expect}"
+    index = "${count.index}"
+    consul_join_tag_value = "${var.consul_join_tag_value}"
+    consul_join_tag_key = "${var.consul_join_tag_key}"
+  }
 }
 
 output "consul_servers" {
